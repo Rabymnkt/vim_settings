@@ -1,0 +1,37 @@
+[[plugins]]
+repo = 'lervag/vimtex'
+on_ft=['tex']
+hook_source='''
+  let g:vimtex_view_general_viewer = 'displayline'
+  let g:vimtex_view_general_options = '-r @line @pdf @tex'
+'''
+
+[[plugins]]
+repo = 'SirVer/ultisnips'
+
+[[plugins]]
+repo = 'honza/vim-snippets'
+
+[[plugins]]
+repo = 'rhysd/vim-clang-format'
+
+[[plugins]]
+repo = 'kana/vim-operator-user'
+
+#[[plugins]]
+#repo = 'dense-analysis/ale'
+
+[[plugins]]
+repo = 'rust-lang/rust.vim'
+
+[[plugins]]
+repo = 'itchyny/lightline.vim'
+
+[[plugins]]
+repo = 'andymass/vim-matchup'
+
+[[plugins]]
+repo = 'cohama/lexima.vim'
+
+[[plugins]]
+repo = 'preservim/nerdtree'
