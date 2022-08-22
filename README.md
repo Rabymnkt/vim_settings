@@ -1,1 +1,3 @@
-# vim_settings
+# vim や neovim の設定ファイル
+
+
