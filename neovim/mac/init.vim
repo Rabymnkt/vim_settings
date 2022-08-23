@@ -29,6 +29,10 @@ Plug 'ryanoasis/vim-devicons'
 "Plug 'ryanolsonx/vim-lsp-python'
 "Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
+" latex
+Plug 'Shougo/deoplete.nvim'
+Plug 'lervag/vimtex'
+Plug 'dense-analysis/ale'
 "------------------------------------------------------------------------------------------------
 
 " If you don't have nodejs and yarn
@@ -42,6 +46,50 @@ Plug 'iamcco/markdown-preview.nvim', { 'for' : ['markdown'], 'do': 'cd app && ya
 "------------------------------------------------------------------------------------------------
 
 call plug#end()
+
+"------------------------------------------------------------------------------------------------
+" Latex用の設定
+" 事前に brew install qpdf などでqpdfのインストールが必要
+" Inverser search を利用するために qpdf を利用
+" Starting server for LaTeX inverse search.
+
+" function! s:myinversetex()
+"     if !filereadable('/tmp/sv4nvim' . expand("%:p"))
+"         call mkdir('/tmp/sv4nvim' . expand("%:p:h"),"p")
+"         call serverstart('/tmp/sv4nvim' . expand("%:p"))
+"     endif
+" endfunction
+" command! Serverorig call s:myinversetex()
+
+" augroup latex_new
+" " texソースのときに自動実行
+" autocmd!
+" autocmd BufRead *.tex Serverorig
+" autocmd BufRead *.ltx Serverorig
+" autocmd BufWritePost *.tex Serverorig
+" autocmd BufWritePost *.ltx Serverorig
+" augroup END
+
+
+" 手動でコンパイル
+let g:vimtex_compiler_latexmk = { 'continuous' : 0,}
+" qpdfviewでpdfプレビュー
+let g:vimtex_view_method = 'skim'
+let g:vimtex_view_general_options = '--unique @pdf\#src:@tex:@line:@col'
+
+" Auto start deoplete package.
+let g:deoplete#enable_at_startup = 1
+" vimtexのオムニ補完をdeopleteから呼び出す
+call deoplete#custom#var('omni', 'input_patterns', {
+    \ 'tex': g:vimtex#re#deoplete
+    \})
+
+" Setting ALE (Asyncronus Linting Engine)
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+let g:ale_lint_on_text_changed = 'always'
+"------------------------------------------------------------------------------------------------
 
 " カラースキーム系の設定
 set notermguicolors
