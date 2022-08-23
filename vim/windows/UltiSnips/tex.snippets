@@ -1,0 +1,130 @@
+snippet \begin "\begin{} \end{}"
+\begin{${1:env}}
+	${2}
+\end{$1}
+endsnippet
+
+snippet latex "latex template"
+\documentclass[10pt,a4paper,dvipdfmx]{jsarticle}
+
+% パッケージについて https://qiita.com/mo-mo-666/items/2686488fc29c5a37832b#32-%E6%97%A5%E6%9C%AC%E8%AA%9E%E3%83%95%E3%82%A9%E3%83%B3%E3%83%88
+
+% 数式系
+\usepackage{amsthm,amsmath,amssymb,amsfonts}
+\usepackage{latexsym}
+\usepackage{mathrsfs}
+\usepackage{mathtools}
+
+% 画像系
+\usepackage[dvipdfmx]{graphicx,xcolor}
+% 図や表の配置関係
+\usepackage{float}
+% 図を回り込ませる
+\usepackage{wrapfig}
+
+% 英字フォントの設定
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+% 数式で太字を使う
+\usepackage{bm}
+
+% amsthmを用いた定理環境
+% 英語のとき
+\theoremstyle{plain}
+\newtheorem{Thm}{Theorem}[section]
+\newtheorem{Lem}[Thm]{Lemma}
+\newtheorem{Prop}[Thm]{Proposition}
+\newtheorem{Cor}[Thm]{Corollary}
+\theoremstyle{definition}
+\newtheorem{Def}[Thm]{Definition}
+\newtheorem{Rem}[Thm]{Remark}
+\theoremstyle{remark}
+\newtheorem{Eg}[Thm]{Example}
+
+\theoremstyle{plain}
+\newtheorem*{Thm*}{Theorem}
+\newtheorem*{Lem*}{Lemma}
+\newtheorem*{Prop*}{Proposition}
+\newtheorem*{Cor*}{Corollary}
+\theoremstyle{definition}
+\newtheorem*{Def*}{Definition}
+\newtheorem*{Rem*}{Remark}
+\theoremstyle{remark}
+\newtheorem*{Eg*}{Example}
+
+%%% log type
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\Supp}{Supp}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\Det}{Det}
+\DeclareMathOperator{\Log}{Log}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\rk}{rk}
+\DeclareMathOperator{\corank}{corank}
+\DeclareMathOperator{\Res}{Res}
+\DeclareMathOperator{\Ker}{Ker}
+\DeclareMathOperator{\coker}{coker}
+\DeclareMathOperator{\Coker}{Coker}
+%%% limit type
+\DeclareMathOperator*{\argmin}{arg~min}
+\DeclareMathOperator*{\argmax}{arg~max}
+
+% 適切な括弧を書くためのコマンド
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert} % | | absolute value
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert} % || || norm
+\DeclarePairedDelimiter{\rbra}{(}{)} % () round brackets
+\DeclarePairedDelimiter{\cbra}{\\{}{\\}} % {} curly brackets
+\DeclarePairedDelimiter{\sbra}{[}{]} % [] square brackets
+\DeclarePairedDelimiter{\abra}{\langle}{\rangle} % < > angle brackets
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor} % floor function
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil} % ceil function
+
+% ハイパーリンクの設定
+\usepackage[%
+ dvipdfmx,%
+ bookmarks=true,%
+ bookmarksdepth=3,%
+ bookmarksnumbered=true,%
+ colorlinks=false,%
+ setpagesize=false,%
+ pdftitle={},%
+ pdfsubject={},%
+ pdfauthor={},%
+ pdfkeywords={}%
+]{hyperref}
+% PDFのしおり機能の日本語文字化けを防ぐ。
+\usepackage{pxjahyper}
+\usepackage{listings,jvlisting,jlisting} %日本語のコメントアウトをする場合jvlisting（もしくはjlisting）が必要
+%ここからソースコードの表示に関する設定
+\lstset{
+  language=Matlab,      %lt;--あるいは ,Python,MathaticaやMatlab などリスト対象の言語を指定
+  basicstyle={\small},%
+  identifierstyle={\small},%
+  commentstyle={\small\itshape},%
+  keywordstyle={\small\bfseries},%
+  ndkeywordstyle={\small},%
+  stringstyle={\small\ttfamily},
+  frame={tb},
+  breaklines=true,
+  columns=[l]{fullflexible},%
+% numbers=left,%
+  xrightmargin=0zw,%
+  xleftmargin=3zw,%
+  numberstyle={\scriptsize},%
+  stepnumber=1,
+  numbersep=1zw,%
+  lineskip=-0.5ex%
+}
+% 例
+%
+%	\begin{lstlisting}[caption = 可制御性行列を求める]
+%	n = length(A);
+%	MC = [];
+%	for i=1:n
+%	MC = [MC A^(i-1)*B];
+%	end
+%	\end{lstlisting}
+
+endsnippet
