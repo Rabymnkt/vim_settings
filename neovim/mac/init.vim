@@ -30,9 +30,10 @@ Plug 'ryanoasis/vim-devicons'
 "Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
 " latex
-Plug 'Shougo/deoplete.nvim'
 Plug 'lervag/vimtex'
-Plug 'dense-analysis/ale'
+" fuzzy
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
 "------------------------------------------------------------------------------------------------
 
 " If you don't have nodejs and yarn
@@ -78,23 +79,33 @@ let g:vimtex_view_method = 'skim'
 let g:vimtex_view_general_options = '--unique @pdf\#src:@tex:@line:@col'
 
 " Auto start deoplete package.
-let g:deoplete#enable_at_startup = 1
+" let g:deoplete#enable_at_startup = 1
 " vimtexのオムニ補完をdeopleteから呼び出す
-call deoplete#custom#var('omni', 'input_patterns', {
-    \ 'tex': g:vimtex#re#deoplete
-    \})
-
-" Setting ALE (Asyncronus Linting Engine)
-let g:ale_echo_msg_error_str = 'E'
-let g:ale_echo_msg_warning_str = 'W'
-let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
-let g:ale_lint_on_text_changed = 'always'
+" call deoplete#custom#var('omni', 'input_patterns', {
+"     \ 'tex': g:vimtex#re#deoplete
+"     \})
 "------------------------------------------------------------------------------------------------
+" ***********************************************************************************
+" colorscheme の設定前に全角スペースの強調表示の設定をしないとエラーが出る．
+" 全角スペースの背景を赤に変更
+autocmd Colorscheme * highlight FullWidthSpace guibg=darkcyan
+autocmd VimEnter * match FullWidthSpace /　/
 
 " カラースキーム系の設定
 set notermguicolors
 set background=dark
 colorscheme duskfox
+" ***********************************************************************************
+" -----------------------------------------------------------------------------------
+" fzf.vimの設定
+nnoremap <silent> <leader>f :Files<CR>
+nnoremap <silent> <leader>g :GFiles<CR>
+nnoremap <silent> <leader>G :GFiles?<CR>
+nnoremap <silent> <leader>b :Buffers<CR>
+nnoremap <silent> <leader>h :History<CR>
+nnoremap <silent> <leader>r :Rg<CR>
+nnoremap <silent> <leader>a :Ag<CR>
+" -----------------------------------------------------------------------------------
 
 " rubyのパス
 let g:ruby_host_prog = '/usr/local/bin/neovim-ruby-host'
@@ -107,8 +118,6 @@ let g:airline#extensions#tabline#enabled = 1
 "let g:airline#extensions#tabline#left_alt_sep = '>'
 let g:airline_theme = 'deus'
 
-" coc-ltex
-let g:coc_filetype_map = {'tex': 'latex'}
 
 " フォルダアイコンを表示
 let g:WebDevIconsNerdTreeBeforeGlyphPadding = ""
@@ -138,8 +147,8 @@ let g:webdevicons_conceal_nerdtree_brackets = 1
 let NERDTreeWinSize = 20
 " バッファ移動のショートカットキー設定
 set hidden
-nnoremap <C-h> :bnext<CR>
-nnoremap <C-l> :bprev<CR>
+nnoremap <C-l> :bnext<CR>
+nnoremap <C-h> :bprev<CR>
 
 " ターミナルモードから抜けるためのキーバインド
 tnoremap <ESC> <C-\><C-n>
@@ -149,31 +158,39 @@ autocmd TermOpen * startinsert
 "vimgrepの使用時に自動的にquickfix-windowを開くようにする
 autocmd QuickFixCmdPost *grep* cwindow
 
-" gitgutterの設定
-nnoremap gss <Plug>(GitGutterStageHunk)
-nnoremap gsu <Plug>(GitGutterUndoHunk)
-nnoremap gsp <Plug>(GitGutterPreviewHunk)
+" --------------------------------------------------------------------------------------
+" coc.nvimの設定
+" 参考 : https://qiita.com/totto2727/items/d0844c79f97ab601f13b
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
+" autocomplete
+inoremap <silent><expr> <C-j> coc#pum#visible() ? coc#pum#next(1) : "\<C-j>"
+inoremap <silent><expr> <C-k> coc#pum#visible() ? coc#pum#prev(1) : "\<C-k>"
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
+inoremap <silent><expr> <Esc> coc#pum#visible() ? coc#pum#cancel() : "\<Esc>"
+inoremap <silent><expr> <C-h> coc#pum#visible() ? coc#pum#cancel() : "\<C-h>"
+
+" <Tab>で次、<S+Tab>で前
+inoremap <silent><expr> <TAB>
+  \ coc#pum#visible() ? coc#pum#next(1):
+  \ <SID>check_back_space() ? "\<Tab>" :
+  \ coc#refresh()
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<S-TAB>" " "\<C-h>"
+inoremap <silent><expr> <c-space> coc#refresh()
 
 " coc-snippet スニペット展開
-imap <C-k> <Plug>(coc-snippets-expand)
+" imap <C-k> <Plug>(coc-snippets-expand)
 " coc-snippet スニペット次の位置に移動
-let g:coc_snippet_next = '<c-j>'
+let g:coc_snippet_next = '<c-n>'
 " coc-snippet スニペット前の位置に移動
-let g:coc_snippet_prev = '<c-z>'
+let g:coc_snippet_prev = '<c-p>'
 
-" ----------------------------------------------------------------------------------------------
-" 補完表示時のEnterで改行をしない
-" inoremap <expr><CR>  pumvisible() ? "<C-y>" : "<CR>"
-" coc.nvimを用する場合は，
-" :CocConfig で coc-config.json に(suggest.keepCompleteoptはダブルクォーテーションで囲む)
-" {
-"    suggest.keepCompleteopt: true 
-" " }
-" " を追記する
-set completeopt=menuone,noinsert
-" inoremap <expr><C-n> pumvisible() ? "<Down>" : "<C-n>"
-" inoremap <expr><C-p> pumvisible() ? "<Up>" : "<C-p>"
-" ----------------------------------------------------------------------------------------------
+" coc-ltex
+let g:coc_filetype_map = {'tex': 'latex'}
+" --------------------------------------------------------------------------------------
 
 " シンタックスハイライト
 syntax on
