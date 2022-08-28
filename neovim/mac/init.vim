@@ -104,8 +104,9 @@ nnoremap <silent> <leader>G :GFiles?<CR>
 nnoremap <silent> <leader>b :Buffers<CR>
 nnoremap <silent> <leader>h :History<CR>
 nnoremap <silent> <leader>r :Rg<CR>
-nnoremap <silent> <leader>a :Ag<CR>
 " -----------------------------------------------------------------------------------
+" fugitiveの設定
+nnoremap <slient> <leader>d :Gdiffsplit<CR>
 
 " rubyのパス
 let g:ruby_host_prog = '/usr/local/bin/neovim-ruby-host'
