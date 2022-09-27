@@ -11,8 +11,8 @@ Plug 'SirVer/ultisnips'
 Plug 'junegunn/vim-easy-align'
 " Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-endwise'
+Plug 'dense-analysis/ale'
 Plug 'w0ng/vim-hybrid'
-" Plug 'w0rp/ale'
 Plug 'osyo-manga/vim-anzu'
 Plug 'EdenEast/nightfox.nvim'
 " Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
@@ -106,7 +106,7 @@ nnoremap <silent> <leader>h :History<CR>
 nnoremap <silent> <leader>r :Rg<CR>
 " -----------------------------------------------------------------------------------
 " fugitiveの設定
-nnoremap <slient> <leader>d :Gdiffsplit<CR>
+nnoremap <silent> <leader>d :Gdiffsplit<CR>
 
 " rubyのパス
 let g:ruby_host_prog = '/usr/local/bin/neovim-ruby-host'
@@ -170,7 +170,7 @@ endfunction
 " autocomplete
 inoremap <silent><expr> <C-j> coc#pum#visible() ? coc#pum#next(1) : "\<C-j>"
 inoremap <silent><expr> <C-k> coc#pum#visible() ? coc#pum#prev(1) : "\<C-k>"
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
+inoremap <silent><expr> <C-y> coc#pum#visible() ? coc#pum#confirm() : "\<C-y>"
 inoremap <silent><expr> <Esc> coc#pum#visible() ? coc#pum#cancel() : "\<Esc>"
 inoremap <silent><expr> <C-h> coc#pum#visible() ? coc#pum#cancel() : "\<C-h>"
 
@@ -319,7 +319,6 @@ set nrformats=
 let g:loaded_python_provider = 0
 " let g:python_host_prog = '/usr/bin/python'
 let g:python3_host_prog = '/usr/bin/python3'
-
 hi Comment ctermfg=gray
 
 if has('mouse')
