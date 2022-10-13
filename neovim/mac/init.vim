@@ -161,6 +161,9 @@ autocmd QuickFixCmdPost *grep* cwindow
 
 " --------------------------------------------------------------------------------------
 " coc.nvimの設定
+" coc.nvim の補完メニューの洗濯中の色を変更
+hi CocMenuSel guifg=#cccccc guibg=#2a3d75
+
 " 参考 : https://qiita.com/totto2727/items/d0844c79f97ab601f13b
 function! s:check_back_space() abort
   let col = col('.') - 1
