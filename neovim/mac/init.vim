@@ -104,6 +104,10 @@ set notermguicolors
 set background=dark
 colorscheme duskfox
 " ***********************************************************************************
+
+" leader キーの変更
+let mapleader = "\<Space>"
+
 " -----------------------------------------------------------------------------------
 " fzf.vimの設定
 " git管理されていれば:GFiles、そうでなければ:Filesを実行する
@@ -142,11 +146,11 @@ nnoremap <silent> <leader>d :Gdiffsplit<CR>
 " g]で前の変更箇所へ移動する
 nnoremap <leader>gp :GitGutterPrevHunk<CR>
 " g[で次の変更箇所へ移動する
-nnoremap <leader>gp :GitGutterNextHunk<CR>
+nnoremap <leader>gn :GitGutterNextHunk<CR>
 " ghでdiffをハイライトする
 nnoremap <leader>gh :GitGutterLineHighlightsToggle<CR>
 " gpでカーソル行のdiffを表示する
-nnoremap <leader>gp :GitGutterPreviewHunk<CR>
+nnoremap <leader>gd :GitGutterPreviewHunk<CR>
 " 記号の色を変更する
 highlight GitGutterAdd ctermfg=green
 highlight GitGutterChange ctermfg=blue
