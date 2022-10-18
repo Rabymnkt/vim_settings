@@ -189,7 +189,7 @@ nmap ga <Plug>(EasyAlign)
 
 " Fern の設定
 " Ctrl+dでファイルツリーを表示/非表示する
-nnoremap <C-d> :Fern . -reveal=% -drawer -toggle -width=25<CR>
+nnoremap <C-d> :Fern . -reveal=% -drawer -stay -toggle -width=25<CR>
 " アイコンの表示を有効化
 let g:fern#renderer = 'nerdfont'
 " アイコンに色をつける
