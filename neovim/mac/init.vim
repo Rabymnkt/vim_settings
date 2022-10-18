@@ -4,7 +4,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-surround'
 Plug 'airblade/vim-gitgutter'
-Plug 'scrooloose/nerdtree'
+" Plug 'scrooloose/nerdtree'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-commentary'
 Plug 'SirVer/ultisnips'
@@ -28,6 +28,14 @@ Plug 'ryanoasis/vim-devicons'
 "Plug 'prabirshrestha/async.vim'
 "Plug 'ryanolsonx/vim-lsp-python'
 "Plug 'prabirshrestha/asyncomplete-lsp.vim'
+
+Plug 'lambdalisue/fern.vim'
+Plug 'lambdalisue/fern-git-status.vim'
+Plug 'lambdalisue/nerdfont.vim'
+Plug 'lambdalisue/fern-renderer-nerdfont.vim'
+Plug 'lambdalisue/glyph-palette.vim'
+Plug 'lambdalisue/fern-hijack.vim'
+Plug 'yuki-yano/fern-preview.vim'
 
 " latex
 Plug 'lervag/vimtex'
@@ -98,35 +106,75 @@ colorscheme duskfox
 " ***********************************************************************************
 " -----------------------------------------------------------------------------------
 " fzf.vimの設定
-nnoremap <silent> <leader>f :Files<CR>
-nnoremap <silent> <leader>g :GFiles<CR>
-nnoremap <silent> <leader>G :GFiles?<CR>
-nnoremap <silent> <leader>b :Buffers<CR>
-nnoremap <silent> <leader>h :History<CR>
-nnoremap <silent> <leader>r :Rg<CR>
+" git管理されていれば:GFiles、そうでなければ:Filesを実行する
+fun! FzfOmniFiles()
+  let is_git = system('git status')
+  if v:shell_error
+    :Files
+  else
+    :GFiles
+  endif
+endfun
+nnoremap <silent> <leader>ff :call FzfOmniFiles()<CR>
+nnoremap <silent> <leader>fb :Buffers<CR>
+nnoremap <silent> <leader>fh :History<CR>
+nnoremap <silent> <leader>fr :Rg<CR>
+" <leader>fk で文字列検索を開く
+" <S-?>でプレビューを表示/非表示する
+command! -bang -nargs=* Rg
+\ call fzf#vim#grep(
+\ 'rg --column --line-number --hidden --ignore-case --no-heading --color=always '.shellescape(<q-args>), 1,
+\ <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 3..'}, 'up:60%')
+\ : fzf#vim#with_preview({'options': '--exact --delimiter : --nth 3..'}, 'right:50%:hidden', '?'),
+\ <bang>0)
+nnoremap <leader>fk :Rg<CR>
+
+" frでカーソル位置の単語をファイル検索する
+nnoremap <leader>fs vawy:Rg <C-R>"<CR>
+" frで選択した単語をファイル検索する
+xnoremap <leader>fs y:Rg <C-R>"<CR>
 " -----------------------------------------------------------------------------------
 " fugitiveの設定
 nnoremap <silent> <leader>d :Gdiffsplit<CR>
+
+" git 操作(gitgutter)
+"" git操作
+" g]で前の変更箇所へ移動する
+nnoremap <leader>gp :GitGutterPrevHunk<CR>
+" g[で次の変更箇所へ移動する
+nnoremap <leader>gp :GitGutterNextHunk<CR>
+" ghでdiffをハイライトする
+nnoremap <leader>gh :GitGutterLineHighlightsToggle<CR>
+" gpでカーソル行のdiffを表示する
+nnoremap <leader>gp :GitGutterPreviewHunk<CR>
+" 記号の色を変更する
+highlight GitGutterAdd ctermfg=green
+highlight GitGutterChange ctermfg=blue
+highlight GitGutterDelete ctermfg=red
+
+"" 反映時間を短くする(デフォルトは4000ms)
+set updatetime=250
 
 " rubyのパス
 let g:ruby_host_prog = '/usr/local/bin/neovim-ruby-host'
 
 " airlineの設定
-let g:airline_theme = 'wombat'
-let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
+" let g:airline_theme = 'wombat'
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#default#layout = [[ 'a', 'b', 'c' ], ['x', 'y']] 
+let g:airline_section_c = '%t %M'
+" タブラインの表示を変更する
+let g:airline#extensions#tabline#fnamemod = ':t'
+let g:airline#extensions#tabline#show_buffers = 1
+let g:airline#extensions#tabline#show_splits = 0
+let g:airline#extensions#tabline#show_tabs = 1
+let g:airline#extensions#tabline#show_tab_nr = 0
+let g:airline#extensions#tabline#show_tab_type = 1
+let g:airline#extensions#tabline#show_close_button = 0
+let g:airline_theme = 'deus'
 "let g:airline#extensions#tabline#left_sep = ' '
 "let g:airline#extensions#tabline#left_alt_sep = '>'
-let g:airline_theme = 'deus'
-
-
-" フォルダアイコンを表示
-let g:WebDevIconsNerdTreeBeforeGlyphPadding = ""
-let g:WebDevIconsUnicodeDecorateFolderNodes = v:true
-" after a re-source, fix syntax matching issues (concealing brackets):
-if exists('g:loaded_webdevicons')
-call webdevicons#refresh()
-endif
 
 " vim-anzuの設定
 nmap n <Plug>(anzu-n-with-echo)
@@ -139,13 +187,50 @@ xmap ga <Plug>(EasyAlign)
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign)
 
-" NERDTreeの設定
-"
-nnoremap <C-d> :NERDTreeToggle<CR>
-" フォルダアイコンを表示
-let g:webdevicons_enable_nerdtree = 1
-let g:webdevicons_conceal_nerdtree_brackets = 1
-let NERDTreeWinSize = 20
+" Fern の設定
+" Ctrl+dでファイルツリーを表示/非表示する
+nnoremap <C-d> :Fern . -reveal=% -drawer -toggle -width=25<CR>
+" アイコンの表示を有効化
+let g:fern#renderer = 'nerdfont'
+" アイコンに色をつける
+augroup my-glyph-palette
+  autocmd! *
+  autocmd FileType fern call glyph_palette#apply()
+  autocmd FileType nerdtree,startify call glyph_palette#apply()
+augroup END
+" 隠しファイルも表示
+let g:fern#default_hidden=1
+" 公式リポジトリを参考にキーマップを追加
+function! s:fern_settings() abort
+  nmap <silent> <buffer> p     <Plug>(fern-action-preview:toggle)
+  nmap <silent> <buffer> <C-p> <Plug>(fern-action-preview:auto:toggle)
+  nmap <silent> <buffer> <C-d> <Plug>(fern-action-preview:scroll:down:half)
+  nmap <silent> <buffer> <C-u> <Plug>(fern-action-preview:scroll:up:half)
+endfunction
+
+augroup fern-settings
+  autocmd!
+  autocmd FileType fern call s:fern_settings()
+augroup END
+
+" " NERDTreeの設定
+
+" nnoremap <C-d> :NERDTreeToggle<CR>
+" " フォルダアイコンを表示
+" let g:webdevicons_enable_nerdtree = 1
+" let g:webdevicons_conceal_nerdtree_brackets = 1
+" let NERDTreeWinSize = 20
+" " フォルダアイコンを表示
+" let g:WebDevIconsNerdTreeBeforeGlyphPadding = ""
+" let g:WebDevIconsUnicodeDecorateFolderNodes = v:true
+" " after a re-source, fix syntax matching issues (concealing brackets):
+" if exists('g:loaded_webdevicons')
+" call webdevicons#refresh()
+" endif
+
+" " set guifont=DroidSansMono\ Nerd\ Font\ 13
+" " set guifontwide=DroidSansMono\ Nerd\ Font\ 13
+
 " バッファ移動のショートカットキー設定
 set hidden
 nnoremap <C-l> :bnext<CR>
@@ -199,9 +284,6 @@ let g:coc_filetype_map = {'tex': 'latex'}
 " シンタックスハイライト
 syntax on
 " set t_Co=256
-
-" set guifont=DroidSansMono\ Nerd\ Font\ 13
-" set guifontwide=DroidSansMono\ Nerd\ Font\ 13
 
 " クリップボード連携設定
 set clipboard&
