@@ -4,31 +4,20 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-surround'
 Plug 'airblade/vim-gitgutter'
-" Plug 'scrooloose/nerdtree'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-commentary'
-Plug 'SirVer/ultisnips'
 Plug 'junegunn/vim-easy-align'
-" Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-endwise'
-Plug 'dense-analysis/ale'
 Plug 'w0ng/vim-hybrid'
 Plug 'osyo-manga/vim-anzu'
 Plug 'EdenEast/nightfox.nvim'
-" Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
-"Plug 'ap/vim-buftabline'
-" Plug 'nvim-treesitter/nvim-treesitter' " v0.7以上
-"Plug 'kyazdani42/nvim-web-devicons'
-"Plug 'romgrk/barbar.nvim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ryanoasis/vim-devicons'
-"Plug 'zefei/vim-wintabs'
-"Plug 'prabirshrestha/vim-lsp'
-"Plug 'prabirshrestha/asyncomplete.vim'
-"Plug 'prabirshrestha/async.vim'
-"Plug 'ryanolsonx/vim-lsp-python'
-"Plug 'prabirshrestha/asyncomplete-lsp.vim'
+Plug 'SirVer/ultisnips'
 
+Plug 'dense-analysis/ale'
+
+Plug 'sainnhe/gruvbox-material' 
 Plug 'lambdalisue/fern.vim'
 Plug 'lambdalisue/fern-git-status.vim'
 Plug 'lambdalisue/nerdfont.vim'
@@ -57,42 +46,6 @@ Plug 'iamcco/markdown-preview.nvim', { 'for' : ['markdown'], 'do': 'cd app && ya
 call plug#end()
 
 "------------------------------------------------------------------------------------------------
-" Latex用の設定
-" 事前に brew install qpdf などでqpdfのインストールが必要
-" Inverser search を利用するために qpdf を利用
-" Starting server for LaTeX inverse search.
-
-" function! s:myinversetex()
-"     if !filereadable('/tmp/sv4nvim' . expand("%:p"))
-"         call mkdir('/tmp/sv4nvim' . expand("%:p:h"),"p")
-"         call serverstart('/tmp/sv4nvim' . expand("%:p"))
-"     endif
-" endfunction
-" command! Serverorig call s:myinversetex()
-
-" augroup latex_new
-" " texソースのときに自動実行
-" autocmd!
-" autocmd BufRead *.tex Serverorig
-" autocmd BufRead *.ltx Serverorig
-" autocmd BufWritePost *.tex Serverorig
-" autocmd BufWritePost *.ltx Serverorig
-" augroup END
-
-
-" 手動でコンパイル
-let g:vimtex_compiler_latexmk = { 'continuous' : 0,}
-" qpdfviewでpdfプレビュー
-let g:vimtex_view_method = 'skim'
-let g:vimtex_view_general_options = '--unique @pdf\#src:@tex:@line:@col'
-
-" Auto start deoplete package.
-" let g:deoplete#enable_at_startup = 1
-" vimtexのオムニ補完をdeopleteから呼び出す
-" call deoplete#custom#var('omni', 'input_patterns', {
-"     \ 'tex': g:vimtex#re#deoplete
-"     \})
-"------------------------------------------------------------------------------------------------
 " ***********************************************************************************
 " colorscheme の設定前に全角スペースの強調表示の設定をしないとエラーが出る．
 " 全角スペースの背景を赤に変更
@@ -100,9 +53,19 @@ autocmd Colorscheme * highlight FullWidthSpace guibg=darkcyan
 autocmd VimEnter * match FullWidthSpace /　/
 
 " カラースキーム系の設定
-set notermguicolors
+"
+" set notermguicolors
+" set background=dark
+" colorscheme duskfox
+
+if has('termguicolors')
+  set termguicolors
+endif
 set background=dark
-colorscheme duskfox
+let g:gruvbox_material_background = 'hard'
+let g:gruvbox_material_better_performance = 1
+colorscheme gruvbox-material
+let g:airline_theme = 'gruvbox_material'
 " ***********************************************************************************
 
 " leader キーの変更
@@ -138,8 +101,13 @@ nnoremap <leader>fs vawy:Rg <C-R>"<CR>
 " frで選択した単語をファイル検索する
 xnoremap <leader>fs y:Rg <C-R>"<CR>
 " -----------------------------------------------------------------------------------
+
+" ultisnips の設定
+let g:UltiSnipsExpandTrigger="<Tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-k>"
+let g:UltiSnipsJumpBackwardTrigger="<c-j>"
 " fugitiveの設定
-nnoremap <silent> <leader>d :Gdiffsplit<CR>
+nnoremap <silent> <leader>ds :Gdiffsplit<CR>
 
 " git 操作(gitgutter)
 "" git操作
@@ -151,6 +119,11 @@ nnoremap <leader>gn :GitGutterNextHunk<CR>
 nnoremap <leader>gh :GitGutterLineHighlightsToggle<CR>
 " gpでカーソル行のdiffを表示する
 nnoremap <leader>gd :GitGutterPreviewHunk<CR>
+let g:gitgutter_sign_added = '+'
+let g:gitgutter_sign_modified = '>'
+let g:gitgutter_sign_removed = '-'
+let g:gitgutter_sign_removed_first_line = '^'
+let g:gitgutter_sign_modified_removed = '<'
 " 記号の色を変更する
 highlight GitGutterAdd ctermfg=green
 highlight GitGutterChange ctermfg=blue
@@ -176,7 +149,7 @@ let g:airline#extensions#tabline#show_tabs = 1
 let g:airline#extensions#tabline#show_tab_nr = 0
 let g:airline#extensions#tabline#show_tab_type = 1
 let g:airline#extensions#tabline#show_close_button = 0
-let g:airline_theme = 'deus'
+" let g:airline_theme = 'deus'
 "let g:airline#extensions#tabline#left_sep = ' '
 "let g:airline#extensions#tabline#left_alt_sep = '>'
 
@@ -217,23 +190,7 @@ augroup fern-settings
   autocmd FileType fern call s:fern_settings()
 augroup END
 
-" " NERDTreeの設定
-
-" nnoremap <C-d> :NERDTreeToggle<CR>
-" " フォルダアイコンを表示
-" let g:webdevicons_enable_nerdtree = 1
-" let g:webdevicons_conceal_nerdtree_brackets = 1
-" let NERDTreeWinSize = 20
-" " フォルダアイコンを表示
-" let g:WebDevIconsNerdTreeBeforeGlyphPadding = ""
-" let g:WebDevIconsUnicodeDecorateFolderNodes = v:true
-" " after a re-source, fix syntax matching issues (concealing brackets):
-" if exists('g:loaded_webdevicons')
-" call webdevicons#refresh()
-" endif
-
-" " set guifont=DroidSansMono\ Nerd\ Font\ 13
-" " set guifontwide=DroidSansMono\ Nerd\ Font\ 13
+let g:fern#renderer#nerdfont#indent_markers = 1
 
 " バッファ移動のショートカットキー設定
 set hidden
@@ -248,6 +205,24 @@ autocmd TermOpen * startinsert
 "vimgrepの使用時に自動的にquickfix-windowを開くようにする
 autocmd QuickFixCmdPost *grep* cwindow
 
+" ale 
+" let g:ale_lint_on_text_changed = 0
+" シンボルカラムを表示したままにする
+let g:ale_sign_column_always = 1
+" 保存時に整形してくれる
+let g:ale_fix_on_save = 1
+" 補完してくれる
+let g:ale_completion_enabled = 1
+" エラー行に表示するマーク
+let g:ale_sign_error = '⨉'
+let g:ale_sign_warning = '⚠'
+" エラー行にカーソルをあわせた際に表示されるメッセージフォーマット
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+let g:ale_statusline_format = ['⨉ %d', '⚠ %d', '⬥ ok']
+let g:ale_linters = {
+    \   'c' : ['clangd'],
+    \   'cpp' : ['clangd']
+\}
 " --------------------------------------------------------------------------------------
 " coc.nvimの設定
 " coc.nvim の補完メニューの洗濯中の色を変更
@@ -266,25 +241,25 @@ inoremap <silent><expr> <C-y> coc#pum#visible() ? coc#pum#confirm() : "\<C-y>"
 inoremap <silent><expr> <Esc> coc#pum#visible() ? coc#pum#cancel() : "\<Esc>"
 inoremap <silent><expr> <C-h> coc#pum#visible() ? coc#pum#cancel() : "\<C-h>"
 
-" <Tab>で次、<S+Tab>で前
-inoremap <silent><expr> <TAB>
-  \ coc#pum#visible() ? coc#pum#next(1):
-  \ <SID>check_back_space() ? "\<Tab>" :
-  \ coc#refresh()
-inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<S-TAB>" " "\<C-h>"
-inoremap <silent><expr> <c-space> coc#refresh()
+"Diagnosticsの、左横のアイコンの色設定
+highlight CocErrorSign ctermfg=15 ctermbg=196
+highlight CocWarningSign ctermfg=0 ctermbg=172
 
-" coc-snippet スニペット展開
-" imap <C-k> <Plug>(coc-snippets-expand)
-" coc-snippet スニペット次の位置に移動
-let g:coc_snippet_next = '<c-n>'
-" coc-snippet スニペット前の位置に移動
-let g:coc_snippet_prev = '<c-p>'
+"以下ショートカット
 
-" coc-ltex
-let g:coc_filetype_map = {'tex': 'latex'}
+"ノーマルモードで
+"スペースhでHover
+nmap <silent> <leader>h :<C-u>call CocAction('doHover')<cr>
+"スペースdfでDefinition
+nmap <silent> <leader>df <Plug>(coc-definition)
+"スペースrfでReferences
+nmap <silent> <leader>rf <Plug>(coc-references)
+"スペースrnでRename
+nmap <silent> <leader>rn <Plug>(coc-rename)
+"スペースfmtでFormat
+nmap <silent> <leader>fmt <Plug>(coc-format)
+
 " --------------------------------------------------------------------------------------
-
 " シンタックスハイライト
 syntax on
 " set t_Co=256
@@ -299,6 +274,8 @@ set hidden
 set nowritebackup
 " ファイルを上書きする前にバックアップを作ることを無効化
 set nobackup
+" undoファイル(.un~)を生成しない
+set noundofile
 " vim の矩形選択で文字が無くても右へ進める
 set virtualedit=block
 " 挿入モードでバックスペースで削除できるようにする
@@ -307,7 +284,8 @@ set backspace=indent,eol,start
 "set ambiwidth=double
 " wildmenuオプションを有効(vimバーからファイルを選択できる)
 set wildmenu
-
+" コマンドラインでTAB補完時に大文字・小文字を区別しない
+set wildignorecase
 "----------------------------------------
 " 検索
 "----------------------------------------
@@ -321,6 +299,8 @@ set wrapscan
 set incsearch
 " 検索結果をハイライト表示
 set hlsearch
+" 文字列検索のハイライトオフ
+nmap <slient> <Esc><Esc> :<C-u>nohlsearch<CR><Esc>
 " ハイライトされた文字の色と背景色を指定
 " 設定できる具体的な色に関してはコマンドで
 " :so $VIMRUNTIME/syntax/colortest.vim
@@ -389,7 +369,7 @@ set smartindent
 "set autoindent
 "改行時に，ブロックに応じて自動でインデントを挿入しない
 "set noautoindent
-"set nosmartindent
+" set nosmartindent
 "set nocindent
 " スワップファイルを作成しない
 set noswapfile
@@ -403,6 +383,7 @@ set number relativenumber
 nnoremap <Esc><Esc> :nohlsearch<CR><ESC>
 " すべての数を10進数として扱う
 set nrformats=
+" Vim内部で使われる文字エンコーディングをutf-8にする
 
 " python2 providerを無効化
 let g:loaded_python_provider = 0
